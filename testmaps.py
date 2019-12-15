@@ -1,6 +1,6 @@
 import googlemaps 
 
-def getnodedata(file_location):
+def getNodeData(file_location):
     f = open(file_location)
     lines = f.readlines()
     placesToVisit = []
@@ -22,7 +22,7 @@ def getnodedata(file_location):
 def genDistanceMatrix(file_location = '/home/metalcyanide/cp/sample.txt', api_key):
     gmaps = googlemaps.Client(key=api_key) 
     placeDict = dict()
-    placeDict = getnodedata(file_location)
+    placeDict = getNodeData(file_location)
     print(placeDict.keys())
     distancedict = dict()
     # return 0
@@ -41,7 +41,9 @@ def genDistanceMatrix(file_location = '/home/metalcyanide/cp/sample.txt', api_ke
     
     return distancedict
 
-apikey = "YOUR_API_KEY"
-mydict = dict()
-mydict = genDistanceMatrix(apikey)
-print(mydict)
+
+def __init__ == main :
+    apikey = "YOUR_API_KEY"
+    mydict = dict()
+    mydict = genDistanceMatrix(apikey)
+    print(mydict)
