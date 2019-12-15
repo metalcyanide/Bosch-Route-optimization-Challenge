@@ -78,7 +78,7 @@ def classify_a_point(point, groups, k):
     dist=[]
     for i in range(len(groups)):
         for j in range(len(groups[i])):
-            dist.append(distance(point,groups[i][j]),i)
+            dist.append((distance(point,groups[i][j]),i))
     if len(dist)>k:
         dist=sorted(dist)[:k]
     else:
