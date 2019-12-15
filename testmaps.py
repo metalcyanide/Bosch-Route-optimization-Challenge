@@ -19,7 +19,7 @@ def getnodedata(file_location):
 
 #get distance matrix
 
-def genDistanceMatrix(file_location = '/home/metalcyanide/cp/sample.txt', api_key = 'AIzaSyB05i3p1oxUBiV0Sgbv1CBrVpRwzHHbd04'):
+def genDistanceMatrix(file_location = '/home/metalcyanide/cp/sample.txt', api_key):
     gmaps = googlemaps.Client(key=api_key) 
     placeDict = dict()
     placeDict = getnodedata(file_location)
@@ -41,21 +41,7 @@ def genDistanceMatrix(file_location = '/home/metalcyanide/cp/sample.txt', api_ke
     
     return distancedict
 
+apikey = "YOUR_API_KEY"
 mydict = dict()
-mydict = genDistanceMatrix()
+mydict = genDistanceMatrix(apikey)
 print(mydict)
-
-
-
-
-
-
-# for i in placesToVisit:
-#     for j in placesToVisit:
-#         gmaps.directions(origin = placesToVisit[i], destination = placesToVisit[j])
-
-# route = gmaps.directions(origin = 'Devegowda Petrol Bunk', destination = 'Hoskeralli')
-  
-# # Printing the result 
-# print(route)
-# print(my_dist) 
