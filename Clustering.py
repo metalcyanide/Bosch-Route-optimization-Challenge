@@ -1,7 +1,6 @@
 
 # coding: utf-8
 
-# In[5]:
 
 
 # importing dependencies 
@@ -116,10 +115,4 @@ def cluster(data, no_of_clusters, k):
     
 
 
-# In[20]:
-
-
-x=[0]*10
-x=[[elem] for elem in x]
-x
 
