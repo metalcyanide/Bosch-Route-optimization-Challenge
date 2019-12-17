@@ -6,6 +6,7 @@ import random
 # Now that the initial centers have been chosen, proceed using standard k-means clustering.
 
 #kmeans++ initialization of labels. data being a dictionary
+
 def kMeansPPlusInitalization(data, distancematrix, numclusters):
     initialpoints = dict()
     initialpoints[numclusters] = [random.sample(data.keys(),1)]
@@ -13,7 +14,7 @@ def kMeansPPlusInitalization(data, distancematrix, numclusters):
     while numclusters:
         initialpoints[numclusters] = getNextPoint(data.keys(), distancematrix, initialpoints)
         numclusters -=1
-    
+
     return initialpoints
         
 
@@ -28,6 +29,8 @@ def getNextPoint(keys, distancematrix, initialpoints):
             if(distancematrix[i][j] < minimum):
                 minimum = distancematrix[i][j]
         genDistanceDict[i] = minimum
+    
+
     
     #code for prob. pick to be written
     
