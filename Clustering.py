@@ -1,14 +1,10 @@
-
-# coding: utf-8
-
-
-
 # importing dependencies 
 import numpy as np 
 import pandas as pd 
 import matplotlib.pyplot as plt 
 import matplotlib.cm as cm
 import sys 
+import statistics
    
 # creating data 
 mean_01 = np.array([0.0, 0.0]) 
@@ -75,47 +71,49 @@ def initialize(data, no_of_clusters):
     return centroids 
 
 def classify_a_point(point, groups, k):
-    index=-1
+    # k should be given as an odd number
+    index_data=[-1]*len(data)
     dist=[]
     for i in range(len(groups)):
         for j in range(len(groups[i])):
-            dist.append((distance(point,groups[i][j]),i))
-    if len(dist)>k:
-        dist=sorted(dist)[:k]
-    else:
-        dist=sorted(dist)
+            if point.tolist()==groups[i][j]:
+                return i
+            index_data[data.tolist().index(groups[i][j])]=i
+    for i in range(len(data)):
+        dist.append((distance(point,data[i,:]),index_data[i]))
+    dist=sorted(dist)
+    dist.remove(dist[0]) #removing the distance of point with itself
+    dist=dist[:k]
+
     #calculating frequencies of different groups
-    freq=[0]*len(groups)
+    freq=[0]*(len(groups)+1)
     #use if loops for no_of_clusters times 
     for e in dist:
-        if e[1]==0:
-            freq[0]+=1
-        if e[1]==1:
-            freq[1]+=1
-        if e[1]==2:
-            freq[2]+=1
-        if e[1]==3:
-            freq[3]+=1
-    index = freq.index(max(freq))
-    return index
+        if e[1]==-1:
+            freq[-1]+=1
+            continue
+        for i in range(len(groups)):
+            if e[1]==i:
+                freq[i]+=1
+                continue
+    while(True):
+        if freq[-1]==k:
+            return -1
+        elif freq[-1]<(k+1)/2:
+            return freq.index(max(freq[:-1]))
+        elif freq[-1]>=(k+1)/2:
+            for i in range(len(groups)):
+                if freq[-1]+freq[i]==k:
+                    return i
+            return -1
 
-def cluster(data, no_of_clusters, k, max_iterations):
+def cluster(data, no_of_clusters, k):
     groups=initialize(data, no_of_clusters)
-    #print('groups are',groups)
     groups=[[element] for element in groups]
-    #print('groups converted as follows', groups)
-    #plot_clusters(groups)
-    #plt.show()
-    for n in range(max_iterations):
-        for i in range(data.shape[0]):
-            group_no = classify_a_point(data[i,:], groups,k)
-            #print('point chosen: ', data[i,:], 'classified in group no. :', group_no)
-            print('data point is: ', data[i,:])
-            print('initialized point is: ',groups[group_no][0] )
-            if groups[group_no][0].all()!=data[i,:].all():  #to prevent the initialized points from gettind re-added
-                groups[group_no].append(data[i,:])
-            #plot_clusters(groups)
-            #plt.show()
+    for i in range(data.shape[0]):
+        group_no = classify_a_point(data[i,:], groups,k)
+        if groups[group_no][0]!=data[i,:].tolist():  #to prevent the initialized points from gettind re-added
+            groups[group_no].append(data[i,:].tolist())
     return groups
 
 def plot_clusters(groups):
@@ -124,28 +122,10 @@ def plot_clusters(groups):
     plt.scatter(*zip(*groups[1]),[6], 'b')
     plt.scatter(*zip(*groups[2]),[6], 'g')
     plt.scatter(*zip(*groups[3]),[6], 'c')
-    plt.show()   
-
-
-
-l=initialize(data,4)
-colors = cm.rainbow(np.linspace(0, 1, len(l)))
-#cluster(data,4,5,1)
-plt.scatter(*zip(*data),[6],'r')
-for i in range(len(l)):
-    plt.scatter(l[i][0],l[i][1],[6],color=colors)
-plt.show()
-
-
-
-
+    plt.show()  
     
-    
-        
-    
-    
-    
-    
+# iteration not taken into consideration
 
+plot_clusters(cluster(data,4,7))
 
 
