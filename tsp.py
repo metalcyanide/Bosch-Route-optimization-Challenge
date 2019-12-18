@@ -1,14 +1,9 @@
 import copy
 
-distancematrix = [
-    [0, 7.33, 9, 12],
-    [7.33, 0, 6.43, 4.2],
-    [9, 6.43, 0, 8],
-    [12, 4.2, 8, 0]
-]
-
-nodekeys = [0,1,2,3]
+distancematrix = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
+nodekeys = list(distancematrix.keys())
 start = nodekeys[0]
+# print(start)
 
 endpoints = nodekeys[1:]
 
@@ -17,7 +12,7 @@ dp = {}
 for i in endpoints:
     dp[(start,i), i] = distancematrix[start][i]
 
-print(dp)
+# print(dp)
 
 
 # def tspsolve(nodekeys, distancematrix, start):
@@ -33,6 +28,9 @@ def dpcost(currset, end, distancematrix):
     if (currset,end) in dp.keys():
         return dp[currset,end]
     
+    if len(currset) == 2:
+        dp[currset,end] = distancematrix[start][end]
+        return dp[currset,end]
     # pathnew = dict()
     
     setnew = copy.deepcopy(list(currset))
@@ -82,14 +80,7 @@ def findpath(distancematrix, dp, currset, path = [], start= 0):
         
         
 createdp(nodekeys)
-print(findpath(distancematrix,dp,nodekeys, []))
+print(findpath(distancematrix,dp,nodekeys,start=start))
 
-
-
-
-
-
-
-
-print(dp)
+# print(dp)
 
