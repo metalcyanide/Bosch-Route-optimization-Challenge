@@ -1,0 +1,32 @@
+outline:
+1. Describe the problem:
+    a. normal explanation of problem.
+    b. constraints and their priorities.
+    c. impact of this problem in real time, eg. millions of dollars can
+        be saved by having efficient soln.
+    d. the general methods of solving this; eg. linear programming and
+        heuristic approaches in it, ant colonization and why these fail.
+
+(finish above in around 5 mins)
+
+2. Our Solution
+    a. Use TSP as we want to minimise cost eventually(explain TSP too).
+    b. Problem in using TSP though, is its bad time complexity.
+    c. Hence use clustering to improve time; explain the derivation
+    d. This serves another purpose as well i.e bus size and percent occupancy,
+        how: assign 1 bus for each cluster and run TSP for that cluster
+    e. Now we have to make sure size of each cluster is >85% of bus cap
+        and number of clusters is <= total number of buses available,
+        to handle this, explain the process given by Chaithanya.
+    f. We use KMeans algo for clustering, use the longitude and latitude
+        data to make a 2d plot of the bus stops and their group decided
+        by the algo.
+    g. To handle time window, run TSP on weighted graph, alpha beta
+        method and plot a graph to find alpha such that time is within
+        limit.
+    h. Quantum approach - Chaithanya
+
+(finish above in 13 mins, if anyone asks questions in between then 
+say that we'll take them in the end)
+
+3. Ask for questions
