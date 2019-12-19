@@ -18,10 +18,13 @@ outline:
     e. Now we have to make sure size of each cluster is >85% of bus cap
         and number of clusters is <= total number of buses available,
         to handle this, explain the process given by Chaithanya.
-    f. To handle time window, run TSP on weighted graph, alpha beta
+    f. We use KMeans algo for clustering, use the longitude and latitude
+        data to make a 2d plot of the bus stops and their group decided
+        by the algo.
+    g. To handle time window, run TSP on weighted graph, alpha beta
         method and plot a graph to find alpha such that time is within
         limit.
-    g. Quantum approach - Chaithanya
+    h. Quantum approach - Chaithanya
 
 (finish above in 13 mins, if anyone asks questions in between then 
 say that we'll take them in the end)
