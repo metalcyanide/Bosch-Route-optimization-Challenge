@@ -1,0 +1,1 @@
+['Bata Show Room', 'Rajarajeshwari temple', 'Jantha Bazar', 'Chowdeshwari Talkies', 'Mantri Apartment']
