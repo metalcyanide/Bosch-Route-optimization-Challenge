@@ -129,5 +129,40 @@ def plot_clusters(groups, numclusters):
     
     plt.show()
 
+def findSuitablek(data, minimum, maximum):
+    mumcluster = minimum
+    groups = cluster(data, numcluster) 
+    diff = []
+    for i in range(minimum, maximum+1):
+        groups = cluster(data,numcluster)
+        minlen = min([len(i) for i in groups])
+        maxlen = max([len(i) for i in groups])
+        diff.append(maxlen - minlen)
+    mindiff = min(diff)
+    for i in len(diff):
+        if(diff[i] == mindiff):
+            return i+minimum
+
+
+def groupclusters(data, numcluster, seats):
+    groups = cluster(data, numcluster)
+    gcluster = [[] [] []]
+
+    for i in groups:
+        if(len(groups) < 0.6 * seats):
+            gcluster[0].append(i)
+        elif (len(groups) <1.2 * seats):
+            gcluster[1].append(i)
+        else:
+            gcluster[2].append(i)
     
-plot_clusters(cluster(data, 4),4)
+    for i in gcluster[2]:
+        getgroup = cluster(i, len(i)/(0.85 * seats))
+        for j in getgroup:
+            gcluster[1].append(i)
+    
+    return gcluster[1]
+
+
+plot_clusters(cluster(data, 4))
+
