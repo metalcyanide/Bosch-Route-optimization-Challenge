@@ -72,7 +72,10 @@ def initialize(data, no_of_clusters):
 
 def classify_a_point(point, groups, k):
     # k should be given as an odd number
-    index_data=[-1]*len(data)
+    index_data = []
+    for i in range(0,len(data)):
+        index_data.append(-1)
+
     dist=[]
     for i in range(len(groups)):
         for j in range(len(groups[i])):
@@ -116,16 +119,14 @@ def cluster(data, no_of_clusters, k):
             groups[group_no].append(data[i,:].tolist())
     return groups
 
-def plot_clusters(groups):
-    #colors = cm.rainbow(np.linspace(0, 1, len(groups)))
-    plt.scatter(*zip(*groups[0]),[6], 'r')
-    plt.scatter(*zip(*groups[1]),[6], 'b')
-    plt.scatter(*zip(*groups[2]),[6], 'g')
-    plt.scatter(*zip(*groups[3]),[6], 'c')
-    plt.show()  
+def plot_clusters(groups, numclusters):
+    for i in range(0, numclusters):
+        plt.scatter(*zip(*groups[i]),[6])
+    
+    plt.show()
     
 # iteration not taken into consideration
 
-plot_clusters(cluster(data,4,7))
+plot_clusters(cluster(data,4, 6), 4)
 
 
