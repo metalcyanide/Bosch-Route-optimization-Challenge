@@ -2600,6 +2600,9 @@ nodekeys = list(distancematrix.keys())
 
 start ='Bosch Bidadi'
 
+'''
+returns the minimum path cost for given weightmatrix and set of points in the path
+'''
 def dpcost(currset, end, weightmatrix):
     currset = tuple(currset)
     if (currset,end) in dp.keys():
@@ -2619,6 +2622,9 @@ def dpcost(currset, end, weightmatrix):
 
     return dp[currset,end]
 
+'''
+Performs the memoization using dp dictionary to store values
+'''
 def createdp(currset,start = start):
     for i in currset:
         if i != start:
@@ -2659,6 +2665,9 @@ clusters = {0: ['Jayadeva Hospital Junction', 'Gottigere', 'Silk Board', 'BTM 2n
 
 #### running TSP for all clusters ####
 
+'''
+Plots the results for given clusters
+'''
 for clus in clusters:
 	timewith = []
 	timewithout = []
