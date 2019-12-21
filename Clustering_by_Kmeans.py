@@ -5,26 +5,6 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import sys 
 from statistics import mean 
-   
-# # creating data 
-# mean_01 = np.array([0.0, 0.0]) 
-# cov_01 = np.array([[1, 0.3], [0.3, 1]]) 
-# dist_01 = np.random.multivariate_normal(mean_01, cov_01, 10) 
-   
-# mean_02 = np.array([6.0, 7.0]) 
-# cov_02 = np.array([[1.5, 0.3], [0.3, 1]]) 
-# dist_02 = np.random.multivariate_normal(mean_02, cov_02, 10) 
-   
-# mean_03 = np.array([7.0, -5.0]) 
-# cov_03 = np.array([[1.2, 0.5], [0.5, 1,3]]) 
-# dist_03 = np.random.multivariate_normal(mean_03, cov_01, 10) 
-   
-# mean_04 = np.array([2.0, -7.0]) 
-# cov_04 = np.array([[1.2, 0.5], [0.5, 1,3]]) 
-# dist_04 = np.random.multivariate_normal(mean_04, cov_01, 10) 
-   
-# data = np.vstack((dist_01, dist_02, dist_03, dist_04)) 
-# np.random.shuffle(data) 
 
 latlongdict = { 'BTM 2nd stage': (12.9125291, 77.5982493), 'Koramangala': (12.9350054, 77.6115462), 'Anand Ashram': (12.9268719, 77.5990938), 'Vijaya Bank Adugodi': (12.9378759, 77.5944627), 'Hulimavu Gate': (12.8881313, 77.5914776), 'Adugodi': (12.9435045, 77.6075158), 'Austin Town': (12.9567638, 77.6129863), 'Viveknagar': (12.9521797, 77.6188548), 'Adugodi Signal': (12.9436745, 77.6077108), 'Mico Layout': (12.9164844, 77.6016567), 'Ashram HDFC Bank': (12.9485816, 77.5797068), 'Lakkasandra Bus Stop': (12.9368414, 77.6004492), 'Arakere BTS Layout': (12.9229302, 77.5663966), 'Aneypalya': (12.9478156, 77.6027586), 'Arakere Layout': (12.9229302, 77.5663966), 'Bannerghatta Road': (12.9089725, 77.5979482), 'Arakere Gate': (12.889589, 77.5976873), 'Sagar Appolo Hospital': (12.9268719, 77.5990938), 'Canara Bank': (12.9481897, 77.6002658), 'BPL Stop': (12.887181, 77.5970994), 'Mico Signal': (12.9442415, 77.6026388), 'Udupi Guarden': (12.9176934, 77.6089431), 'BTM': (12.9164844, 77.6016567), 'Jayadeva Hospital Junction': (12.9175363, 77.5999589), 'Arekere Gate': (12.889589, 77.5976873), 'Ashram Bus Stop': (12.9268719, 77.5990938), 'Ashram': (12.9268719, 77.5990938), 'Spar Stop': (12.9640503, 77.5711259), 'Koramangala Police Station': (12.9408786, 77.6198734), 'Gottigere': (12.8560296, 77.5886844), 'Silk Board': (12.9169078, 77.6216554), 'Dairy Circle': (12.9389163, 77.6008787), 'Thilaknagar': (12.9218711, 77.5986135), 'Koramangala Depot': (12.9420488, 77.6232414)}
 data = []
@@ -33,12 +13,13 @@ for i in latlongdict.keys():
 
 data = np.asarray(data)
 
-# print(data)
-
 # function to compute euclidean distance 
 def distance(p1, p2): 
     return np.sum((p1 - p2)**2) 
 
+'''
+Kmeans++ initialization for the given data
+'''
 def initialize(data, no_of_clusters): 
     ''' 
     intialized the centroids for K-means++ 
@@ -75,7 +56,10 @@ def initialize(data, no_of_clusters):
         next_centroid = np.random.choice(temp_data,p=pdf)
         centroids.append(next_centroid)
     return centroids 
-   
+
+'''
+Classifies a point using the details of the classified data so far
+'''
 def classify_a_point(point, groups):
     index=-1
     dist=[]
@@ -92,6 +76,9 @@ def classify_a_point(point, groups):
     
     return index
 
+'''
+creates an inverse map of given dictionary
+'''
 def inversedict(placeDict):
     inversedict = dict()
     for i in placeDict.keys():
@@ -99,6 +86,9 @@ def inversedict(placeDict):
     
     return inversedict
 
+'''
+Classifies data into clusters and creates the details of number of people at each cluster
+'''
 def cluster(data, no_of_clusters, placeDict, peopleDict):
     groups=initialize(data, no_of_clusters)
     groups=[[element] for element in groups]
@@ -137,12 +127,18 @@ def cluster(data, no_of_clusters, placeDict, peopleDict):
         numpeople[i] = count
     return groups, clusterDict, numpeople
 
+'''
+Plots clusters of data with same colour
+'''
 def plot_clusters(groups, numclusters):
     for i in range(0, numclusters):
         plt.scatter(*zip(*groups[i]),[6])
     
     plt.show()
 
+'''
+finds the suitable value for number of clusters in the data 
+'''
 def findSuitablek(data, minimum, maximum):
     mumcluster = minimum
     groups, clusterDict, numpeople = cluster(data, numcluster) 
@@ -157,7 +153,9 @@ def findSuitablek(data, minimum, maximum):
         if(diff[i] == mindiff):
             return i+minimum
 
-
+'''
+groups the clusters based on total number of people boarding in that cluster 
+'''
 def groupclusters(data, numcluster, seats):
     groups, clusterDict, numpeople = cluster(data, numcluster)
     gcluster = [[], [], []]
@@ -187,7 +185,7 @@ groups , clusterDict,numpeople = cluster(data, 2, placeDict, peopleDict)
 print(len(clusterDict[0]))
 print(len(clusterDict[1]))
 
-print(clusterDict)
-print(numpeople)
+print(clusterDict) #dict of clusters
+print(numpeople) #dict consisting of number of people in each cluster
 plot_clusters(groups, 2)
 

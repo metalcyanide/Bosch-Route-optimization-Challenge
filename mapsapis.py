@@ -45,8 +45,8 @@ def getNodeData(file_location, delimiter = ',', start = 'Bosch Bidadi', startloc
         else :
             placeDict[currplace] = latlong
             peopleDict[currplace] = peopleatplace
-    print(peopleDict)
-    print(placeDict)
+    print(peopleDict) #this gives dictionary with places as keys and no.of people at that place as value
+    print(placeDict) #this gives dictionary with place names as keys and (lat, lng) co-ordinates as value
     return placeDict, peopleDict
 
 
@@ -56,7 +56,7 @@ and a boolean getdistance to get the distance dictionary among various nodes or 
 
 '''
 def genDistanceMatrix(api_key, getdistance = 1, needtoappendcity = [], file_location = '/home/metalcyanide/cp/sample.txt', city = "Bengaluru"):
-    gmaps = googlemaps.Client(key=api_key) 
+    gmaps = googlemaps.Client(key=api_key)  #connecting with google maps 
     placeDict = dict()
     placeDict, peopleDict = getNodeData(file_location)
     
@@ -64,13 +64,9 @@ def genDistanceMatrix(api_key, getdistance = 1, needtoappendcity = [], file_loca
     timedict = dict()
 
     for i in placeDict.keys():
-        # if i in needtoappendcity:
-        #     i = i + ' , ' + city
         tempDict = dict()
         temptimDict = dict()
         for j in placeDict.keys():
-            # if j in needtoappendcity:
-            #     j = j + ' , ' + city
             my_dist = gmaps.distance_matrix(placeDict[i],placeDict[j])
 
             print(i)
@@ -94,13 +90,10 @@ def getlatlong(api_key, end = 'Bosch Bidadi',file_location = '/home/metalcyanide
     gmaps = googlemaps.Client(key=api_key) 
     placeDict = dict()
     placeDict = getNodeData(file_location)
-    # print(placeDict.keys())
     needtoappendcity = []
     latlongdict = dict()
     for i in placeDict.keys():
-        # print(i)
         my_dist = gmaps.distance_matrix(i,end)
-        # print(my_dist)
         if not(my_dist['rows'][0]['elements'][0]['status'] == "OK"):
             needtoappendcity.append(i)
             i = i+ ' , ' + city
@@ -108,7 +101,6 @@ def getlatlong(api_key, end = 'Bosch Bidadi',file_location = '/home/metalcyanide
             needtoappendcity.append(i)
             i = i+ ' , ' + city
         my_dist = gmaps.directions(i,end)
-        # print(my_dist[0]['legs'][0]['start_location'])
         lat = my_dist[0]['legs'][0]['start_location']['lat']
         lng = my_dist[0]['legs'][0]['start_location']['lng']
         latlong = [lat, lng]
@@ -125,6 +117,10 @@ this is run only once for given set of names and result is stored
 but if we want to do traffic adjustments we need to process this entire data after fixed amount of time
 '''
 apikey = "AIzaSyB05i3p1oxUBiV0Sgbv1CBrVpRwzHHbd04"
+
+'''
+this is for data where lat long is not given.
+'''
 # apikey = "YOUR_API_KEY"
 # latlongtxt = open('latlongdict.txt', 'w') 
 # invalidcitytxt = open('invalidcity.txt', 'w')
