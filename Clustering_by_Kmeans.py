@@ -26,37 +26,14 @@ from statistics import mean
 # data = np.vstack((dist_01, dist_02, dist_03, dist_04)) 
 # np.random.shuffle(data) 
 
-latlongdict = {'Devegowda Petrol Bunk': [12.9220205, 77.55990969999999],
- 'Hoskeralli': [12.9221571, 77.53624889999999],
- 'Channasandra RNSIT': [12.9026311, 77.5192643],
- 'Kathriguppe': [12.9293747, 77.55694629999999],
- 'Kamakya Theatre': [12.9235491, 77.55313830000001],
- 'PESIT Collage': [12.9351728, 77.5362291],
- 'Katherguppe Circle': [12.932768, 77.5565211],
- 'HosaKerehalli': [12.9221571, 77.53624889999999],
- 'Bata Show Room , Bengaluru': [13.1216635, 77.61291159999999],
- 'Ittamadu': [12.9227148, 77.54531589999999],
- 'Rajarajeshwari temple , Bengaluru': [12.9313044, 77.50664669999999],
- 'Jantha Bazar , Bengaluru': [12.9770282, 77.57729479999999],
- 'Kuthriguppe': [12.9293747, 77.55694629999999],
- 'Hosakarehalli': [12.9221571, 77.53624889999999],
- 'Rajarajeshwarinagar Double Road': [12.9571219, 77.5926667],
- 'Kanthi Sweets RR Nagar': [12.9148941, 77.5207701],
- 'Chowdeshwari Talkies , Bengaluru': [13.0278455, 77.55373689999999],
- 'Jayanagar': [12.9308094, 77.5801604],
- 'Kattrigupe': [12.9293747, 77.55694629999999],
- 'Kadirenahallli': [12.9155118, 77.5627923],
- 'Mantri Apartment , Bengaluru': [12.9190318, 77.64351239999999],
- 'Kodipalya (Uttarahalli main Road)': [12.9040515, 77.5256473],
- 'Uttarahalli road Kengeri': [12.9100928, 77.486864]}
-
+latlongdict = { 'BTM 2nd stage': (12.9125291, 77.5982493), 'Koramangala': (12.9350054, 77.6115462), 'Anand Ashram': (12.9268719, 77.5990938), 'Vijaya Bank Adugodi': (12.9378759, 77.5944627), 'Hulimavu Gate': (12.8881313, 77.5914776), 'Adugodi': (12.9435045, 77.6075158), 'Austin Town': (12.9567638, 77.6129863), 'Viveknagar': (12.9521797, 77.6188548), 'Adugodi Signal': (12.9436745, 77.6077108), 'Mico Layout': (12.9164844, 77.6016567), 'Ashram HDFC Bank': (12.9485816, 77.5797068), 'Lakkasandra Bus Stop': (12.9368414, 77.6004492), 'Arakere BTS Layout': (12.9229302, 77.5663966), 'Aneypalya': (12.9478156, 77.6027586), 'Arakere Layout': (12.9229302, 77.5663966), 'Bannerghatta Road': (12.9089725, 77.5979482), 'Arakere Gate': (12.889589, 77.5976873), 'Sagar Appolo Hospital': (12.9268719, 77.5990938), 'Canara Bank': (12.9481897, 77.6002658), 'BPL Stop': (12.887181, 77.5970994), 'Mico Signal': (12.9442415, 77.6026388), 'Udupi Guarden': (12.9176934, 77.6089431), 'BTM': (12.9164844, 77.6016567), 'Jayadeva Hospital Junction': (12.9175363, 77.5999589), 'Arekere Gate': (12.889589, 77.5976873), 'Ashram Bus Stop': (12.9268719, 77.5990938), 'Ashram': (12.9268719, 77.5990938), 'Spar Stop': (12.9640503, 77.5711259), 'Koramangala Police Station': (12.9408786, 77.6198734), 'Gottigere': (12.8560296, 77.5886844), 'Silk Board': (12.9169078, 77.6216554), 'Dairy Circle': (12.9389163, 77.6008787), 'Thilaknagar': (12.9218711, 77.5986135), 'Koramangala Depot': (12.9420488, 77.6232414)}
 data = []
 for i in latlongdict.keys():
     data.append(latlongdict[i])
 
 data = np.asarray(data)
 
-print(data)
+# print(data)
 
 # function to compute euclidean distance 
 def distance(p1, p2): 
@@ -115,13 +92,50 @@ def classify_a_point(point, groups):
     
     return index
 
-def cluster(data, no_of_clusters):
+def inversedict(placeDict):
+    inversedict = dict()
+    for i in placeDict.keys():
+        inversedict[placeDict[i]] = i
+    
+    return inversedict
+
+def cluster(data, no_of_clusters, placeDict, peopleDict):
     groups=initialize(data, no_of_clusters)
     groups=[[element] for element in groups]
+    groupstuple=[[] for element in groups]
+
+    for i in range(len(groups)):
+        for j in groups[i]:
+            groupstuple[i].append(tuple(j))
+
+    clusterDict = dict()
+    placeInvDict = inversedict(placeDict)
+
     for i in range(data.shape[0]):
         group_no = classify_a_point(data[i,:], groups)
-        groups[group_no].append(data[i,:])
-    return groups
+        if groups[group_no][0] != data[i,:].tolist():
+            groups[group_no].append(data[i,:])
+            groupstuple[group_no].append(tuple(data[i,:]))
+    for i in range(no_of_clusters):
+        clusterDict[i] = groupstuple[i]
+
+    numpeople = dict()
+
+    for i in clusterDict:
+        clusterdetails = clusterDict[i]
+        clusterdetails = list(set(clusterdetails))
+        clusterDict[i] = clusterdetails
+        
+    for i in range(no_of_clusters):
+        count = 0
+        places = []
+
+        for j in clusterDict[i]:
+           places.append(str(placeInvDict[j]))
+           count +=peopleDict[placeInvDict[j]]
+        clusterDict[i] = places
+        numpeople[i] = count
+    return groups, clusterDict, numpeople
 
 def plot_clusters(groups, numclusters):
     for i in range(0, numclusters):
@@ -131,7 +145,7 @@ def plot_clusters(groups, numclusters):
 
 def findSuitablek(data, minimum, maximum):
     mumcluster = minimum
-    groups = cluster(data, numcluster) 
+    groups, clusterDict, numpeople = cluster(data, numcluster) 
     diff = []
     for i in range(minimum, maximum+1):
         groups = cluster(data,numcluster)
@@ -145,8 +159,8 @@ def findSuitablek(data, minimum, maximum):
 
 
 def groupclusters(data, numcluster, seats):
-    groups = cluster(data, numcluster)
-    gcluster = [[] [] []]
+    groups, clusterDict, numpeople = cluster(data, numcluster)
+    gcluster = [[], [], []]
 
     for i in groups:
         if(len(groups) < 0.6 * seats):
@@ -163,6 +177,17 @@ def groupclusters(data, numcluster, seats):
     
     return gcluster[1]
 
+peopleDict = {'Bosch Bidadi': 0, 'BTM 2nd stage': 1, 'Koramangala': 7, 'Anand Ashram': 1, 'Vijaya Bank Adugodi': 1, 'Hulimavu Gate': 1, 'Adugodi': 1, 'Austin Town': 2, 'Viveknagar': 5, 'Adugodi Signal': 22, 'Mico Layout': 4, 'Ashram HDFC Bank': 1, 'Lakkasandra Bus Stop': 2, 'Arakere BTS Layout': 1, 'Aneypalya': 1, 'Arakere Layout': 1, 'Bannerghatta Road': 4, 'Arakere Gate': 1, 'Sagar Appolo Hospital': 1, 'Canara Bank': 4, 'BPL Stop': 1, 'Mico Signal': 6, 'Udupi Guarden': 2, 'BTM': 5, 'Jayadeva Hospital Junction': 2, 'Arekere Gate': 5, 'Ashram Bus Stop': 1, 'Ashram': 1, 'Spar Stop': 1, 'Koramangala Police Station': 3, 'Gottigere': 2, 'Silk Board': 1, 'Dairy Circle': 1, 'Thilaknagar': 2, 'Koramangala Depot': 1}
+placeDict = {'Bosch Bidadi': (12.7972, 77.4239), 'BTM 2nd stage': (12.9125291, 77.5982493), 'Koramangala': (12.9350054, 77.6115462), 'Anand Ashram': (12.9268719, 77.5990938), 'Vijaya Bank Adugodi': (12.9378759, 77.5944627), 'Hulimavu Gate': (12.8881313, 77.5914776), 'Adugodi': (12.9435045, 77.6075158), 'Austin Town': (12.9567638, 77.6129863), 'Viveknagar': (12.9521797, 77.6188548), 'Adugodi Signal': (12.9436745, 77.6077108), 'Mico Layout': (12.9164844, 77.6016567), 'Ashram HDFC Bank': (12.9485816, 77.5797068), 'Lakkasandra Bus Stop': (12.9368414, 77.6004492), 'Arakere BTS Layout': (12.9229302, 77.5663966), 'Aneypalya': (12.9478156, 77.6027586), 'Arakere Layout': (12.9229302, 77.5663966), 'Bannerghatta Road': (12.9089725, 77.5979482), 'Arakere Gate': (12.889589, 77.5976873), 'Sagar Appolo Hospital': (12.9268719, 77.5990938), 'Canara Bank': (12.9481897, 77.6002658), 'BPL Stop': (12.887181, 77.5970994), 'Mico Signal': (12.9442415, 77.6026388), 'Udupi Guarden': (12.9176934, 77.6089431), 'BTM': (12.9164844, 77.6016567), 'Jayadeva Hospital Junction': (12.9175363, 77.5999589), 'Arekere Gate': (12.889589, 77.5976873), 'Ashram Bus Stop': (12.9268719, 77.5990938), 'Ashram': (12.9268719, 77.5990938), 'Spar Stop': (12.9640503, 77.5711259), 'Koramangala Police Station': (12.9408786, 77.6198734), 'Gottigere': (12.8560296, 77.5886844), 'Silk Board': (12.9169078, 77.6216554), 'Dairy Circle': (12.9389163, 77.6008787), 'Thilaknagar': (12.9218711, 77.5986135), 'Koramangala Depot': (12.9420488, 77.6232414)}
 
-plot_clusters(cluster(data, 4))
+groups , clusterDict,numpeople = cluster(data, 2, placeDict, peopleDict)
+
+
+
+print(len(clusterDict[0]))
+print(len(clusterDict[1]))
+
+print(clusterDict)
+print(numpeople)
+plot_clusters(groups, 2)
 

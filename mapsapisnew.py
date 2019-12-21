@@ -45,8 +45,7 @@ def getNodeData(file_location, delimiter = ',', start = 'Bosch Bidadi', startloc
         else :
             placeDict[currplace] = latlong
             peopleDict[currplace] = peopleatplace
-    print(peopleDict)
-    print(placeDict)
+
     return placeDict, peopleDict
 
 
@@ -59,6 +58,7 @@ def genDistanceMatrix(api_key, getdistance = 1, needtoappendcity = [], file_loca
     gmaps = googlemaps.Client(key=api_key) 
     placeDict = dict()
     placeDict, peopleDict = getNodeData(file_location)
+    print(placeDict)
     
     distancedict = dict()
     timedict = dict()
