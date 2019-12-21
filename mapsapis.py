@@ -4,7 +4,7 @@ import googlemaps
 given a file location and delimiter
 returns dictionary with names of places and number of people at each place
 '''
-def getNodeData(file_location, delimiter = ' '):
+def getNodeData(file_location, delimiter = ','):
     f = open(file_location)
     lines = f.readlines()
     placesToVisit = []
@@ -31,41 +31,32 @@ def genDistanceMatrix(api_key, getdistance = 1, needtoappendcity = [], file_loca
     placeDict = dict()
     placeDict = getNodeData(file_location)
     
-    if(getdistance):
-        distancedict = dict()
-        for i in placeDict.keys():
-            if i in needtoappendcity:
-                i = i + ' , ' + city
-            tempDict = dict()
-            for j in placeDict.keys():
-                if j in needtoappendcity:
-                    j = j + ' , ' + city
-                my_dist = gmaps.distance_matrix(i,j)
+    
+    distancedict = dict()
+    timedict = dict()
 
-                distancevalue = int(my_dist['rows'][0]['elements'][0]['distance']['value'])
-                tempDict[j] = distancevalue
-            distancedict[i] = tempDict
-        
-        return distancedict
-    else:
-        timedict = dict()
-        for i in placeDict.keys():
-            if i in needtoappendcity:
-                i = i + ' , ' + city
-            tempDict = dict()
-            for j in placeDict.keys():
-                if j in needtoappendcity:
-                    j = j + ' , ' + city
-                my_dist = gmaps.distance_matrix(i,j)
-               
-                print(i)
-                print(j)
-                print(my_dist['rows'][0]['elements'][0])  
-                timevalue = int(my_dist['rows'][0]['elements'][0]['duration']['value'])
-                tempDict[j] = timevalue
-            timedict[i] = tempDict
-        
-        return timedict
+    for i in placeDict.keys():
+        if i in needtoappendcity:
+            i = i + ' , ' + city
+        tempDict = dict()
+        temptimDict = dict(0)
+        for j in placeDict.keys():
+            if j in needtoappendcity:
+                j = j + ' , ' + city
+            my_dist = gmaps.distance_matrix(i,j)
+
+            print(i)
+            print(j)
+            print(my_dist['rows'][0]['elements'][0])
+            distancevalue = int(my_dist['rows'][0]['elements'][0]['distance']['value'])
+            timevalue = int(my_dist['rows'][0]['elements'][0]['duration']['value'])
+
+            tempDict[j] = distancevalue
+            temptimDict[j] = timevalue
+        distancedict[i] = tempDict
+        timedict[i] = temptimDict
+    
+    return distancedict, timedict
 
 '''
 This gives us latitude longitute and makes corrections for non-familiar names that confuses google apis
@@ -118,13 +109,12 @@ invalidcitytxt.close()
 
 timetxt = open('timedict.txt', 'w') 
 timedict = dict()
-timedict = genDistanceMatrix(apikey,getdistance = 0,needtoappendcity = needtoappendcity ,file_location = "/home/metalcyanide/github/Route-optimization-Inter-IIT/sampledata/sample.txt" )
+distancedict = dict()
+distancedict, timedict = genDistanceMatrix(apikey,getdistance = 0,needtoappendcity = needtoappendcity ,file_location = "/home/metalcyanide/github/Route-optimization-Inter-IIT/sampledata/sample.txt" )
 print(timedict, file = timetxt)
 timetxt.close()
 
 distancetxt = open('distancedict.txt', 'w') 
-distancedict = dict()
-distancedict = genDistanceMatrix(apikey, needtoappendcity = needtoappendcity,file_location = "/home/metalcyanide/github/Route-optimization-Inter-IIT/sampledata/sample.txt" )
 print(distancedict, file = distancetxt)
 distancetxt.close()
 
